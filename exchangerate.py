@@ -2,6 +2,7 @@ import pandas as pd
 import csv
 import sys
 from PyQt5 import uic
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 
@@ -48,10 +49,15 @@ def get_csv(data):
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.timer = QTimer(self)
         uic.loadUi('ExchangeRate.ui', self)
-        self.loadTable(scrap_the_data())
+        self.loadTable()
+        self.timer.setInterval(10000)
+        self.timer.timeout.connect(self.loadTable)
 
-    def loadTable(self, data):
+    def loadTable(self):
+        self.timer.start()
+        data = scrap_the_data()
         title = data[0]
         del data[0]
         self.table1.setColumnCount(len(title))
@@ -65,7 +71,6 @@ class MyWidget(QMainWindow):
                     i, j, QTableWidgetItem(elem))
 
 
-get_csv(scrap_the_data())
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyWidget()

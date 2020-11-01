@@ -26,8 +26,11 @@
     <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
     <attribute name="title">
-     <string>Tab 1</string>
+     <string>Котировки в реальном времени</string>
     </attribute>
     <widget class="QTableWidget" name="table1">
      <property name="geometry">
@@ -37,6 +40,18 @@
        <width>941</width>
        <height>711</height>
       </rect>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="sortingEnabled">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
