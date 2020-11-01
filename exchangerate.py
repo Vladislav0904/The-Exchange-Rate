@@ -33,8 +33,12 @@ def scrap_the_data():
             if i[1].isdigit() and (',' in i[2] and '%' not in i[2]):
                 i[1] = f'{i[1]} {i[2]}'
                 del i[2]
-            if i[1].isdigit():
+            if ('EUR/' in i[0] or 'USD/' in i[0] or 'CHF/' in i[0]) and i[1].isdigit():
                 i[1] = i[1][:2] + ',' + i[1][2:]
+            elif i[1].isdigit() and len(i[1]) <= 4:
+                i[1] = i[1][:2] + ',' + i[1][2:]
+            elif i[1].isdigit() and len(i[1]) >= 5:
+                i[1] = i[1][:3] + ',' + i[1][3:]
     return data
 
 

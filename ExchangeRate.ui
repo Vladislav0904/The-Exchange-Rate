@@ -22,12 +22,15 @@
      <height>741</height>
     </rect>
    </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
+     <cursorShape>ArrowCursor</cursorShape>
     </property>
     <attribute name="title">
      <string>Котировки в реальном времени</string>
@@ -40,6 +43,9 @@
        <width>941</width>
        <height>711</height>
       </rect>
+     </property>
+     <property name="cursor" stdset="0">
+      <cursorShape>ArrowCursor</cursorShape>
      </property>
      <property name="acceptDrops">
       <bool>false</bool>
@@ -56,6 +62,9 @@
     </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
     <attribute name="title">
      <string>Tab 2</string>
     </attribute>
