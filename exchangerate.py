@@ -49,22 +49,20 @@ class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('ExchangeRate.ui', self)
-        self.loadTable('price.csv')
+        self.loadTable(scrap_the_data())
 
-    def loadTable(self, table_name):
-        with open(table_name, encoding="Windows-1251") as csvfile:
-            reader = csv.reader(csvfile,
-                                delimiter=';', quotechar='"')
-            title = next(reader)
-            self.table1.setColumnCount(len(title))
-            self.table1.setHorizontalHeaderLabels(title)
-            self.table1.setRowCount(0)
-            for i, row in enumerate(reader):
-                self.table1.setRowCount(
-                    self.table1.rowCount() + 1)
-                for j, elem in enumerate(row):
-                    self.table1.setItem(
-                        i, j, QTableWidgetItem(elem))
+    def loadTable(self, data):
+        title = data[0]
+        del data[0]
+        self.table1.setColumnCount(len(title))
+        self.table1.setHorizontalHeaderLabels(title)
+        self.table1.setRowCount(0)
+        for i, row in enumerate(data):
+            self.table1.setRowCount(
+                self.table1.rowCount() + 1)
+            for j, elem in enumerate(row):
+                self.table1.setItem(
+                    i, j, QTableWidgetItem(elem))
 
 
 get_csv(scrap_the_data())
