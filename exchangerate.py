@@ -56,6 +56,7 @@ class MyWidget(QMainWindow):
         self.timer = QTimer(self)
         uic.loadUi('ExchangeRate.ui', self)
         self.loadTable()
+        self.loadTable2()
         self.timer.setInterval(10000)
         self.timer.timeout.connect(self.loadTable)
 
@@ -73,6 +74,21 @@ class MyWidget(QMainWindow):
             for j, elem in enumerate(row):
                 self.table1.setItem(
                     i, j, QTableWidgetItem(elem))
+
+    def loadTable2(self):
+        data1 = scrap_cb_data()
+        title1 = data1[0]
+        del data1[0]
+        self.table2.setColumnCount(len(title1))
+        self.table2.setHorizontalHeaderLabels(title1)
+        self.table2.setRowCount(0)
+        for i, row in enumerate(data1):
+            self.table2.setRowCount(
+                self.table2.rowCount() + 1)
+            for j, elem in enumerate(row):
+                self.table2.setItem(
+                    i, j, QTableWidgetItem(elem))
+        self.table2.resizeColumnsToContents()
 
 
 def scrap_cb_data():
@@ -98,8 +114,9 @@ def scrap_cb_data():
                 del string[i][4]
             elif 6 < len(string[i]) < 8:
                 string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]}'
-                del string[i][4], string[i][5]
-            elif len(string[i]) >= 8:
+                del string[i][4]
+                del string[i][4]
+            elif len(string[i]) == 8:
                 string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]} {string[i][6]}'
                 del string[i][4], string[i][5]
                 del string[i][4]
@@ -108,11 +125,12 @@ def scrap_cb_data():
                 string[i][4] = string[i][4][:3] + ',' + string[i][4][3:]
             else:
                 string[i][4] = string[i][4][:2] + ',' + string[i][4][2:]
-    for i in string:
-        print(i)
+    for i in range(len(string)):
+        if i != 0:
+            del string[i][0]
+    return string
 
 
-scrap_cb_data()
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyWidget()
