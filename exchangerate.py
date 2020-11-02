@@ -75,6 +75,44 @@ class MyWidget(QMainWindow):
                     i, j, QTableWidgetItem(elem))
 
 
+def scrap_cb_data():
+    data1 = pd.read_html("https://www.cbr.ru/currency_base/daily/", header=0, encoding='utf-8')
+    string = str(data1[0]).strip()
+    string = string.split('\n')
+    for i in range(len(string)):
+        string[i] = string[i].split()
+    del string[-2:]
+    for i in range(len(string)):
+        if i == 0:
+            del string[0][4]
+        else:
+            del string[i][3]
+    string[0][0] = f'{string[0][0]} {string[0][1]}'
+    string[0][1] = f'{string[0][2]} {string[0][3]}'
+    del string[0][2]
+    del string[0][2]
+    for i in range(len(string)):
+        if i != 0:
+            if string[i][3].isalpha() and string[i][4].isalpha() and len(string[i]) <= 6:
+                string[i][3] = f'{string[i][3]} {string[i][4]}'
+                del string[i][4]
+            elif 6 < len(string[i]) < 8:
+                string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]}'
+                del string[i][4], string[i][5]
+            elif len(string[i]) >= 8:
+                string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]} {string[i][6]}'
+                del string[i][4], string[i][5]
+                del string[i][4]
+
+            if len(string[i][4]) > 6:
+                string[i][4] = string[i][4][:3] + ',' + string[i][4][3:]
+            else:
+                string[i][4] = string[i][4][:2] + ',' + string[i][4][2:]
+    for i in string:
+        print(i)
+
+
+scrap_cb_data()
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyWidget()
