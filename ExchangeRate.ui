@@ -50,38 +50,64 @@
      <property name="acceptDrops">
       <bool>false</bool>
      </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
-     </property>
+        <property name="autoFillBackground">
+            <bool>false</bool>
+        </property>
+        <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="sortingEnabled">
+            <bool>false</bool>
+        </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_2">
-       <property name="cursor">
-           <cursorShape>ArrowCursor</cursorShape>
-       </property>
-       <property name="accessibleName">
-           <string/>
-       </property>
-       <attribute name="title">
-           <string>Курс ЦБ</string>
-       </attribute>
-       <widget class="QTableWidget" name="table2">
+       <widget class="QPushButton" name="saveRT">
            <property name="geometry">
                <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>941</width>
-                   <height>711</height>
+                   <x>840</x>
+                   <y>670</y>
+                   <width>75</width>
+                   <height>23</height>
                </rect>
+           </property>
+           <property name="text">
+               <string>Сохранить</string>
            </property>
        </widget>
    </widget>
+      <widget class="QWidget" name="tab_2">
+          <property name="cursor">
+              <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <property name="accessibleName">
+              <string/>
+          </property>
+          <attribute name="title">
+              <string>Курс ЦБ</string>
+          </attribute>
+          <widget class="QTableWidget" name="table2">
+              <property name="geometry">
+                  <rect>
+                      <x>0</x>
+                      <y>0</y>
+                      <width>941</width>
+                      <height>711</height>
+                  </rect>
+              </property>
+          </widget>
+          <widget class="QPushButton" name="saveCB">
+              <property name="geometry">
+                  <rect>
+                      <x>830</x>
+                      <y>670</y>
+                      <width>75</width>
+                      <height>23</height>
+                  </rect>
+              </property>
+              <property name="text">
+                  <string>Сохранить</string>
+              </property>
+          </widget>
+      </widget>
   </widget>
  </widget>
  <resources/>

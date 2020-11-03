@@ -5,6 +5,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+import datetime
 
 
 def scrap_the_data():
@@ -42,14 +43,6 @@ def scrap_the_data():
     return data
 
 
-def get_csv(data):
-    with open('price.csv', 'w', newline='', encoding='Windows-1251') as csvfile:
-        writer = csv.writer(
-            csvfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        for i in range(len(data)):
-            writer.writerow(data[i])
-
-
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -59,6 +52,8 @@ class MyWidget(QMainWindow):
         self.loadTable2()
         self.timer.setInterval(10000)
         self.timer.timeout.connect(self.loadTable)
+        self.saveCB.clicked.connect(self.get_csv_cb)
+        self.saveRT.clicked.connect(self.get_csv)
 
     def loadTable(self):
         self.timer.start()
@@ -89,6 +84,40 @@ class MyWidget(QMainWindow):
                 self.table2.setItem(
                     i, j, QTableWidgetItem(elem))
         self.table2.resizeColumnsToContents()
+
+    def get_csv(self):
+        with open(f'Exchange rate {datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}.csv',
+                  'w', newline='', encoding='Windows-1251') as csvfile:
+            writer = csv.writer(
+                csvfile, delimiter=';', quotechar='"',
+                quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(
+                [self.table1.horizontalHeaderItem(i).text()
+                 for i in range(self.table1.columnCount())])
+            for i in range(self.table1.rowCount()):
+                row = []
+                for j in range(self.table1.columnCount()):
+                    item = self.table1.item(i, j)
+                    if item is not None:
+                        row.append(item.text())
+                writer.writerow(row)
+
+    def get_csv_cb(self):
+        with open(f'CB Exchange Rate {datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}.csv',
+                  'w', newline='', encoding='Windows-1251') as csvfile:
+            writer = csv.writer(
+                csvfile, delimiter=';', quotechar='"',
+                quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(
+                [self.table2.horizontalHeaderItem(i).text()
+                 for i in range(self.table2.columnCount())])
+            for i in range(self.table2.rowCount()):
+                row = []
+                for j in range(self.table2.columnCount()):
+                    item = self.table2.item(i, j)
+                    if item is not None:
+                        row.append(item.text())
+                writer.writerow(row)
 
 
 def scrap_cb_data():
