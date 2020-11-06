@@ -3,7 +3,7 @@ import csv
 import sys
 from PyQt5 import uic, QtCore
 from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QColor, QPixmap
+from PyQt5.QtGui import QColor, QPixmap, QBrush
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QCheckBox, QLabel
 import datetime
@@ -132,12 +132,13 @@ class MyWidget(QMainWindow):
             self.table1.setRowCount(
                 self.table1.rowCount() + 1)
             for j, elem in enumerate(row):
+                item1 = QTableWidgetItem(elem)
+                if '-' in elem and '%' in elem:
+                    item1.setForeground(QBrush(QColor(255, 0, 0)))
+                elif '%' in elem:
+                    item1.setForeground(QBrush(QColor(23, 200, 69)))
                 self.table1.setItem(
-                    i, j, QTableWidgetItem(elem))
-
-    def color_row(self, row, color):
-        for i in range(self.table1.columnCount()):
-            self.table1.item(row, i).setBackground(color)
+                    i, j, item1)
 
     def loadTable2(self):
         data1 = scrap_cb_data()
