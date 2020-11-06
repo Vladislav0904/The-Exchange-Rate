@@ -7,10 +7,10 @@
   </property>
   <property name="geometry">
    <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>939</width>
-    <height>729</height>
+       <x>0</x>
+       <y>0</y>
+       <width>936</width>
+       <height>732</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -40,113 +40,188 @@
    <property name="currentIndex">
     <number>0</number>
    </property>
-   <widget class="QWidget" name="tab">
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <attribute name="title">
-     <string>Котировки в реальном времени</string>
-    </attribute>
-       <widget class="QTableWidget" name="table1">
-           <property name="enabled">
-               <bool>true</bool>
-           </property>
-           <property name="geometry">
-               <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>941</width>
-                   <height>711</height>
-               </rect>
-           </property>
-           <property name="cursor" stdset="0">
-               <cursorShape>ArrowCursor</cursorShape>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
+      <widget class="QWidget" name="tab">
+          <property name="cursor">
+              <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <attribute name="title">
+              <string>Котировки в реальном времени</string>
+          </attribute>
+          <widget class="QTableWidget" name="table1">
+              <property name="enabled">
+                  <bool>true</bool>
+              </property>
+              <property name="geometry">
+                  <rect>
+                      <x>0</x>
+                      <y>0</y>
+                      <width>941</width>
+                      <height>721</height>
+                  </rect>
+              </property>
+              <property name="cursor" stdset="0">
+                  <cursorShape>ArrowCursor</cursorShape>
+              </property>
+              <property name="acceptDrops">
+                  <bool>false</bool>
+              </property>
+              <property name="autoFillBackground">
+                  <bool>false</bool>
+              </property>
+              <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
      <property name="sortingEnabled">
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="saveRT">
-        <property name="geometry">
-            <rect>
-                <x>840</x>
-                <y>670</y>
-                <width>75</width>
-                <height>23</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Сохранить</string>
-        </property>
-    </widget>
-       <widget class="QWidget" name="verticalLayoutWidget">
-           <property name="geometry">
-               <rect>
-                   <x>740</x>
-                   <y>30</y>
-                   <width>141</width>
-                   <height>65</height>
-               </rect>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                   <widget class="QCheckBox" name="checkBox">
-                       <property name="text">
-                           <string>Валюта</string>
-                       </property>
-                       <property name="checked">
-                           <bool>true</bool>
-                       </property>
-                   </widget>
-               </item>
-               <item>
-                   <widget class="QCheckBox" name="checkBox_3">
-                       <property name="text">
-                           <string>Фондовые Индексы</string>
-                       </property>
-                       <property name="checked">
-                           <bool>true</bool>
-                       </property>
-                   </widget>
-               </item>
-               <item>
-                   <widget class="QCheckBox" name="checkBox_2">
-                       <property name="autoFillBackground">
-                           <bool>false</bool>
-                       </property>
-                       <property name="text">
-                           <string>Драг. Металлы</string>
-                       </property>
-                       <property name="checked">
-                           <bool>true</bool>
-                       </property>
-                   </widget>
-               </item>
-           </layout>
-       </widget>
-       <widget class="QLabel" name="label">
-           <property name="geometry">
-               <rect>
-                   <x>740</x>
-                   <y>10</y>
-                   <width>47</width>
-                   <height>13</height>
-               </rect>
-           </property>
-           <property name="text">
-               <string>Фильтры</string>
-           </property>
-       </widget>
-   </widget>
+          <widget class="QPushButton" name="saveRT">
+              <property name="geometry">
+                  <rect>
+                      <x>840</x>
+                      <y>670</y>
+                      <width>75</width>
+                      <height>23</height>
+                  </rect>
+              </property>
+              <property name="text">
+                  <string>Сохранить</string>
+              </property>
+          </widget>
+          <widget class="QWidget" name="verticalLayoutWidget">
+              <property name="geometry">
+                  <rect>
+                      <x>740</x>
+                      <y>30</y>
+                      <width>141</width>
+                      <height>65</height>
+                  </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
+                  <item>
+                      <widget class="QCheckBox" name="checkBox">
+                          <property name="text">
+                              <string>Валюта</string>
+                          </property>
+                          <property name="checked">
+                              <bool>true</bool>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QCheckBox" name="checkBox_3">
+                          <property name="text">
+                              <string>Фондовые Индексы</string>
+                          </property>
+                          <property name="checked">
+                              <bool>true</bool>
+                          </property>
+                      </widget>
+                  </item>
+                  <item>
+                      <widget class="QCheckBox" name="checkBox_2">
+                          <property name="autoFillBackground">
+                              <bool>false</bool>
+                          </property>
+                          <property name="text">
+                              <string>Драг. Металлы</string>
+                          </property>
+                          <property name="checked">
+                              <bool>true</bool>
+                          </property>
+                      </widget>
+                  </item>
+              </layout>
+          </widget>
+          <widget class="QLabel" name="label">
+              <property name="geometry">
+                  <rect>
+                      <x>740</x>
+                      <y>10</y>
+                      <width>47</width>
+                      <height>13</height>
+                  </rect>
+              </property>
+              <property name="text">
+                  <string>Фильтры</string>
+              </property>
+          </widget>
+          <widget class="QLineEdit" name="lineEdit">
+              <property name="geometry">
+                  <rect>
+                      <x>590</x>
+                      <y>160</y>
+                      <width>211</width>
+                      <height>20</height>
+                  </rect>
+              </property>
+          </widget>
+          <widget class="QLabel" name="label_2">
+              <property name="geometry">
+                  <rect>
+                      <x>500</x>
+                      <y>160</y>
+                      <width>91</width>
+                      <height>16</height>
+                  </rect>
+              </property>
+              <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+              </property>
+              <property name="text">
+                  <string>Бюджет (RUB)</string>
+              </property>
+          </widget>
+          <widget class="QLineEdit" name="lineEdit_2">
+              <property name="geometry">
+                  <rect>
+                      <x>590</x>
+                      <y>200</y>
+                      <width>211</width>
+                      <height>20</height>
+                  </rect>
+              </property>
+          </widget>
+          <widget class="QLabel" name="label_3">
+              <property name="geometry">
+                  <rect>
+                      <x>450</x>
+                      <y>200</y>
+                      <width>131</width>
+                      <height>16</height>
+                  </rect>
+              </property>
+              <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+              </property>
+              <property name="text">
+                  <string>Валюта (Наименование)</string>
+              </property>
+          </widget>
+          <widget class="QLineEdit" name="lineEdit_3">
+              <property name="geometry">
+                  <rect>
+                      <x>590</x>
+                      <y>240</y>
+                      <width>211</width>
+                      <height>20</height>
+                  </rect>
+              </property>
+          </widget>
+          <widget class="QPushButton" name="result1">
+              <property name="geometry">
+                  <rect>
+                      <x>500</x>
+                      <y>240</y>
+                      <width>75</width>
+                      <height>23</height>
+                  </rect>
+              </property>
+              <property name="text">
+                  <string>Результат</string>
+              </property>
+          </widget>
+      </widget>
    <widget class="QWidget" name="tab_2">
     <property name="cursor">
      <cursorShape>ArrowCursor</cursorShape>
@@ -170,7 +245,7 @@
     <widget class="QPushButton" name="saveCB">
      <property name="geometry">
       <rect>
-       <x>830</x>
+          <x>840</x>
        <y>670</y>
        <width>75</width>
        <height>23</height>

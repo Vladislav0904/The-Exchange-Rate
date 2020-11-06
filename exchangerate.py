@@ -3,9 +3,12 @@ import csv
 import sys
 from PyQt5 import uic, QtCore
 from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QCheckBox
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QCheckBox, QLabel
 import datetime
+
+CUR_KOT = {'USD': 'ЗОЛОТО' 'СЕРЕБРО' 'МЕДЬ' 'НЕФТЬ' 'BTC' 'BCC'}
 
 
 def scrap_the_data():
@@ -101,6 +104,12 @@ class MyWidget(QMainWindow):
         self.checkBox.stateChanged.connect(self.clickBox1)
         self.checkBox_2.stateChanged.connect(self.clickBox1)
         self.checkBox_3.stateChanged.connect(self.clickBox1)
+        self.pixmap = QPixmap('calculate.png')
+        self.image = QLabel(self)
+        self.image.move(475, 30)
+        self.image.resize(250, 150)
+        self.image.setPixmap(self.pixmap)
+        self.result1.clicked.connect(self.calc_clicked)
 
     def loadTable(self):
         self.timer.start()
@@ -125,6 +134,10 @@ class MyWidget(QMainWindow):
             for j, elem in enumerate(row):
                 self.table1.setItem(
                     i, j, QTableWidgetItem(elem))
+
+    def color_row(self, row, color):
+        for i in range(self.table1.columnCount()):
+            self.table1.item(row, i).setBackground(color)
 
     def loadTable2(self):
         data1 = scrap_cb_data()
@@ -177,6 +190,23 @@ class MyWidget(QMainWindow):
 
     def clickBox1(self, state):
         self.loadTable()
+
+    def calc_clicked(self):
+        budget = self.lineEdit.text()
+        currency = self.lineEdit_2.text()
+        info_cur = scrap_the_data()[0]
+        info_met = scrap_the_data()[2]
+        for i in info_cur:
+            if currency.upper() in i[0].upper():
+                multiplier = i[1].replace(',', '.').replace(' ', '')
+        for i in info_met:
+            if currency.upper() in i[0].upper():
+                multiplier = i[1].replace(',', '.').replace(' ', '')
+        if currency.upper() in CUR_KOT.get('USD'):
+            USD = info_cur[0][1].replace(',', '.')
+            multiplier = eval(f'{multiplier} * {USD}')
+        result = float(budget) // float(multiplier)
+        self.lineEdit_3.setText(f'{str(result)}')
 
 
 if __name__ == '__main__':
