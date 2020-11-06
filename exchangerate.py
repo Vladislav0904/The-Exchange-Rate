@@ -1,10 +1,10 @@
 import pandas as pd
 import csv
 import sys
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QCheckBox
 import datetime
 
 
@@ -40,7 +40,51 @@ def scrap_the_data():
                 i[1] = i[1][:2] + ',' + i[1][2:]
             elif i[1].isdigit() and len(i[1]) >= 5:
                 i[1] = i[1][:3] + ',' + i[1][3:]
-    return data
+    data_cur = data[9:15]
+    data_in = data[1:8]
+    data_met = data[16:]
+    title = data[0]
+    return data_cur, data_in, data_met, title
+
+
+def scrap_cb_data():
+    data1 = pd.read_html("https://www.cbr.ru/currency_base/daily/", header=0, encoding='utf-8')
+    string = str(data1[0]).strip()
+    string = string.split('\n')
+    for i in range(len(string)):
+        string[i] = string[i].split()
+    del string[-2:]
+    for i in range(len(string)):
+        if i == 0:
+            del string[0][4]
+        else:
+            del string[i][3]
+    string[0][0] = f'{string[0][0]} {string[0][1]}'
+    string[0][1] = f'{string[0][2]} {string[0][3]}'
+    del string[0][2]
+    del string[0][2]
+    for i in range(len(string)):
+        if i != 0:
+            if string[i][3].isalpha() and string[i][4].isalpha() and len(string[i]) <= 6:
+                string[i][3] = f'{string[i][3]} {string[i][4]}'
+                del string[i][4]
+            elif 6 < len(string[i]) < 8:
+                string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]}'
+                del string[i][4]
+                del string[i][4]
+            elif len(string[i]) == 8:
+                string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]} {string[i][6]}'
+                del string[i][4], string[i][5]
+                del string[i][4]
+
+            if len(string[i][4]) > 6:
+                string[i][4] = string[i][4][:3] + ',' + string[i][4][3:]
+            else:
+                string[i][4] = string[i][4][:2] + ',' + string[i][4][2:]
+    for i in range(len(string)):
+        if i != 0:
+            del string[i][0]
+    return string
 
 
 class MyWidget(QMainWindow):
@@ -54,12 +98,24 @@ class MyWidget(QMainWindow):
         self.timer.timeout.connect(self.loadTable)
         self.saveCB.clicked.connect(self.get_csv_cb)
         self.saveRT.clicked.connect(self.get_csv)
+        self.checkBox.stateChanged.connect(self.clickBox1)
+        self.checkBox_2.stateChanged.connect(self.clickBox1)
+        self.checkBox_3.stateChanged.connect(self.clickBox1)
 
     def loadTable(self):
         self.timer.start()
-        data = scrap_the_data()
-        title = data[0]
-        del data[0]
+        data = []
+        unready_data = scrap_the_data()
+        if self.checkBox.isChecked():
+            for i in unready_data[0]:
+                data.append(i)
+        if self.checkBox_2.isChecked():
+            for i in unready_data[2]:
+                data.append(i)
+        if self.checkBox_3.isChecked():
+            for i in unready_data[1]:
+                data.append(i)
+        title = unready_data[3]
         self.table1.setColumnCount(len(title))
         self.table1.setHorizontalHeaderLabels(title)
         self.table1.setRowCount(0)
@@ -119,45 +175,8 @@ class MyWidget(QMainWindow):
                         row.append(item.text())
                 writer.writerow(row)
 
-
-def scrap_cb_data():
-    data1 = pd.read_html("https://www.cbr.ru/currency_base/daily/", header=0, encoding='utf-8')
-    string = str(data1[0]).strip()
-    string = string.split('\n')
-    for i in range(len(string)):
-        string[i] = string[i].split()
-    del string[-2:]
-    for i in range(len(string)):
-        if i == 0:
-            del string[0][4]
-        else:
-            del string[i][3]
-    string[0][0] = f'{string[0][0]} {string[0][1]}'
-    string[0][1] = f'{string[0][2]} {string[0][3]}'
-    del string[0][2]
-    del string[0][2]
-    for i in range(len(string)):
-        if i != 0:
-            if string[i][3].isalpha() and string[i][4].isalpha() and len(string[i]) <= 6:
-                string[i][3] = f'{string[i][3]} {string[i][4]}'
-                del string[i][4]
-            elif 6 < len(string[i]) < 8:
-                string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]}'
-                del string[i][4]
-                del string[i][4]
-            elif len(string[i]) == 8:
-                string[i][3] = f'{string[i][3]} {string[i][4]} {string[i][5]} {string[i][6]}'
-                del string[i][4], string[i][5]
-                del string[i][4]
-
-            if len(string[i][4]) > 6:
-                string[i][4] = string[i][4][:3] + ',' + string[i][4][3:]
-            else:
-                string[i][4] = string[i][4][:2] + ',' + string[i][4][2:]
-    for i in range(len(string)):
-        if i != 0:
-            del string[i][0]
-    return string
+    def clickBox1(self, state):
+        self.loadTable()
 
 
 if __name__ == '__main__':
