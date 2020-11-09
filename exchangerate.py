@@ -110,6 +110,7 @@ class MyWidget(QMainWindow):
         self.image.resize(250, 150)
         self.image.setPixmap(self.pixmap)
         self.result1.clicked.connect(self.calc_clicked)
+        self.result1_2.clicked.connect(self.calc_clicked_cb)
 
     def loadTable(self):
         self.timer.start()
@@ -208,6 +209,15 @@ class MyWidget(QMainWindow):
             multiplier = eval(f'{multiplier} * {USD}')
         result = float(budget) // float(multiplier)
         self.lineEdit_3.setText(f'{str(result)}')
+
+    def calc_clicked_cb(self):
+        amount = self.lineEdit_5.text()
+        currency = self.lineEdit_6.text()
+        info_cur = scrap_cb_data()
+        for i in info_cur:
+            if currency.upper() in i[1].upper() or currency.upper() in i[2].upper():
+                multiplier = i[3].replace(',', '.').replace(' ', '')
+        self.lineEdit_4.setText(f'{eval(f"{amount} * {multiplier}")}')
 
 
 if __name__ == '__main__':
