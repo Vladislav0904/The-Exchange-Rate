@@ -8,6 +8,7 @@ from PyQt5.QtGui import QColor, QPixmap, QBrush
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QErrorMessage, QLabel
 import datetime
+import sqlite3
 
 CUR_KOT = {'USD': 'ЗОЛОТО' 'СЕРЕБРО' 'МЕДЬ' 'НЕФТЬ' 'BTC' 'BCC',
            'Index': 'Индекс ММВБ' 'Индекс PTC' 'DOW.J' 'NAS100' 'S&P 500' 'NIKKEI' 'DAX' 'ESTX50'}
@@ -122,6 +123,8 @@ class MyWidget(QMainWindow):
         self.image.setPixmap(self.pixmap)
         self.result1.clicked.connect(self.calc_clicked)
         self.result1_2.clicked.connect(self.calc_clicked_cb)
+        self.bd_add.clicked.connect(self.save_bd)
+        self.bd_add_2.clicked.connect(self.save_bd_2)
 
     def loadTable(self):
         self.timer.start()
@@ -241,6 +244,43 @@ class MyWidget(QMainWindow):
             self.lineEdit_4.setText(f'{eval(f"{amount} * {multiplier}")}')
         except Exception:
             self.lineEdit_4.setText('Некорректный формат данных')
+
+    def save_bd(self):
+        csv_row = self.bd.text()
+        for i in range(self.table1.rowCount()):
+            if i == int(csv_row) - 1:
+                row = []
+                for j in range(self.table1.columnCount()):
+                    item = self.table1.item(i, j)
+                    if item is not None:
+                        row.append(item.text())
+
+        con = sqlite3.connect('exchange_rate.sqlite')
+        cur = con.cursor()
+        result = cur.execute(f'''
+          INSERT INTO realtime_kot(currency, rate, change_time)
+            VALUES((select id from realtime_currencies where name = '{row[0]}'),
+            '{row[1]}', '{row[3]}') ''').fetchall()
+        con.commit()
+        con.close()
+
+    def save_bd_2(self):
+        csv_row = self.bd_2.text()
+        for i in range(self.table2.rowCount()):
+            if i == int(csv_row) - 1:
+                row = []
+                for j in range(self.table2.columnCount()):
+                    item = self.table2.item(i, j)
+                    if item is not None:
+                        row.append(item.text())
+        con = sqlite3.connect('exchange_rate.sqlite')
+        cur = con.cursor()
+        result = cur.execute(f'''
+          INSERT INTO cb_rates(currency, rate, change_time)
+            VALUES((select id from cb_currencies where name = '{row[2]}'),
+            '{row[3]}', '{datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}') ''').fetchall()
+        con.commit()
+        con.close()
 
 
 if __name__ == '__main__':

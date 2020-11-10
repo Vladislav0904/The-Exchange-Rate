@@ -15,16 +15,16 @@
   </property>
   <property name="baseSize">
    <size>
-    <width>938</width>
-    <height>729</height>
+       <width>938</width>
+       <height>729</height>
    </size>
   </property>
-  <property name="windowTitle">
-   <string>The Exchange Rate</string>
-  </property>
-  <property name="autoFillBackground">
-   <bool>true</bool>
-  </property>
+     <property name="windowTitle">
+         <string>The Exchange Rate</string>
+     </property>
+     <property name="autoFillBackground">
+         <bool>true</bool>
+     </property>
      <widget class="QTabWidget" name="tabWidget">
          <property name="geometry">
              <rect>
@@ -221,6 +221,29 @@
                      <string>Результат</string>
                  </property>
              </widget>
+             <widget class="QLineEdit" name="bd">
+                 <property name="geometry">
+                     <rect>
+                         <x>460</x>
+                         <y>350</y>
+                         <width>113</width>
+                         <height>20</height>
+                     </rect>
+                 </property>
+             </widget>
+             <widget class="QPushButton" name="bd_add">
+                 <property name="geometry">
+                     <rect>
+                         <x>580</x>
+                         <y>350</y>
+                         <width>101</width>
+                         <height>23</height>
+                     </rect>
+                 </property>
+                 <property name="text">
+                     <string>Сохранить запись</string>
+                 </property>
+             </widget>
          </widget>
          <widget class="QWidget" name="tab_2">
              <property name="cursor">
@@ -232,16 +255,16 @@
              <attribute name="title">
                  <string>Курс ЦБ</string>
              </attribute>
-    <widget class="QTableWidget" name="table2">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>941</width>
-       <height>711</height>
-      </rect>
-     </property>
-    </widget>
+             <widget class="QTableWidget" name="table2">
+                 <property name="geometry">
+                     <rect>
+                         <x>0</x>
+                         <y>0</y>
+                         <width>941</width>
+                         <height>711</height>
+                     </rect>
+                 </property>
+             </widget>
              <widget class="QPushButton" name="saveCB">
                  <property name="geometry">
                      <rect>
@@ -328,6 +351,29 @@
                  </property>
                  <property name="text">
                      <string>Результат</string>
+                 </property>
+             </widget>
+             <widget class="QLineEdit" name="bd_2">
+                 <property name="geometry">
+                     <rect>
+                         <x>610</x>
+                         <y>310</y>
+                         <width>113</width>
+                         <height>20</height>
+                     </rect>
+                 </property>
+             </widget>
+             <widget class="QPushButton" name="bd_add_2">
+                 <property name="geometry">
+                     <rect>
+                         <x>730</x>
+                         <y>310</y>
+                         <width>101</width>
+                         <height>23</height>
+                     </rect>
+                 </property>
+                 <property name="text">
+                     <string>Сохранить запись</string>
                  </property>
              </widget>
          </widget>
