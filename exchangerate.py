@@ -3,7 +3,7 @@ import csv
 import sys
 from urllib import error
 from PyQt5 import uic
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QColor, QPixmap, QBrush
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QErrorMessage, QLabel
@@ -107,6 +107,12 @@ class MyWidget(QMainWindow):
         super().__init__()
         self.timer = QTimer(self)
         uic.loadUi('ExchangeRate.ui', self)
+        self.pixmap = QPixmap('calculate.png')
+        self.pixmap.scaled(235, 100, Qt.KeepAspectRatio)
+        self.image = QLabel(self)
+        self.image.move(690, 75)
+        self.image.resize(235, 100)
+        self.image.setPixmap(self.pixmap)
         self.loadTable()
         self.loadTable2()
         self.timer.setInterval(10000)
@@ -116,11 +122,6 @@ class MyWidget(QMainWindow):
         self.checkBox.stateChanged.connect(self.clickBox1)
         self.checkBox_2.stateChanged.connect(self.clickBox1)
         self.checkBox_3.stateChanged.connect(self.clickBox1)
-        self.pixmap = QPixmap('calculate.png')
-        self.image = QLabel(self)
-        self.image.move(475, 30)
-        self.image.resize(250, 150)
-        self.image.setPixmap(self.pixmap)
         self.result1.clicked.connect(self.calc_clicked)
         self.result1_2.clicked.connect(self.calc_clicked_cb)
         self.bd_add.clicked.connect(self.save_bd)
@@ -218,7 +219,7 @@ class MyWidget(QMainWindow):
             info_cur = scrap_the_data()[0]
             info_met = scrap_the_data()[2]
             for i in info_cur:
-                if currency.upper() in i[0].upper():
+                if currency.upper() == i[0].upper()[:3]:
                     multiplier = i[1].replace(',', '.').replace(' ', '')
             for i in info_met:
                 if currency.upper() in i[0].upper():
@@ -246,41 +247,52 @@ class MyWidget(QMainWindow):
             self.lineEdit_4.setText('Некорректный формат данных')
 
     def save_bd(self):
-        csv_row = self.bd.text()
-        for i in range(self.table1.rowCount()):
-            if i == int(csv_row) - 1:
-                row = []
-                for j in range(self.table1.columnCount()):
-                    item = self.table1.item(i, j)
-                    if item is not None:
-                        row.append(item.text())
-
-        con = sqlite3.connect('exchange_rate.sqlite')
-        cur = con.cursor()
-        result = cur.execute(f'''
-          INSERT INTO realtime_kot(currency, rate, change_time)
-            VALUES((select id from realtime_currencies where name = '{row[0]}'),
-            '{row[1]}', '{row[3]}') ''').fetchall()
-        con.commit()
-        con.close()
+        try:
+            csv_row = self.bd.text()
+            if int(csv_row) > self.table1.rowCount():
+                raise ValueError
+            else:
+                for i in range(self.table1.rowCount()):
+                    if i == int(csv_row) - 1:
+                        row = []
+                        for j in range(self.table1.columnCount()):
+                            item = self.table1.item(i, j)
+                            if item is not None:
+                                row.append(item.text())
+                con = sqlite3.connect('exchange_rate.sqlite')
+                cur = con.cursor()
+                result = cur.execute(f'''
+                  INSERT INTO realtime_kot(currency, rate, change_time)
+                    VALUES((select id from realtime_currencies where name = '{row[0]}'),
+                    '{row[1]}', '{row[3]}') ''').fetchall()
+                con.commit()
+                con.close()
+        except ValueError:
+            self.bd.setText('Некорректные данные')
 
     def save_bd_2(self):
-        csv_row = self.bd_2.text()
-        for i in range(self.table2.rowCount()):
-            if i == int(csv_row) - 1:
-                row = []
-                for j in range(self.table2.columnCount()):
-                    item = self.table2.item(i, j)
-                    if item is not None:
-                        row.append(item.text())
-        con = sqlite3.connect('exchange_rate.sqlite')
-        cur = con.cursor()
-        result = cur.execute(f'''
-          INSERT INTO cb_rates(currency, rate, change_time)
-            VALUES((select id from cb_currencies where name = '{row[2]}'),
-            '{row[3]}', '{datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}') ''').fetchall()
-        con.commit()
-        con.close()
+        try:
+            csv_row_cb = self.bd_2.text()
+            if int(csv_row_cb) > self.table2.rowCount():
+                raise ValueError
+            else:
+                for i in range(self.table2.rowCount()):
+                    if i == int(csv_row_cb) - 1:
+                        row = []
+                        for j in range(self.table2.columnCount()):
+                            item = self.table2.item(i, j)
+                            if item is not None:
+                                row.append(item.text())
+            con = sqlite3.connect('exchange_rate.sqlite')
+            cur = con.cursor()
+            result = cur.execute(f'''
+              INSERT INTO cb_rates(currency, rate, change_time)
+                VALUES((select id from cb_currencies where name = '{row[2]}'),
+                '{row[3]}', '{datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}') ''').fetchall()
+            con.commit()
+            con.close()
+        except ValueError:
+            self.bd_2.setText('Некорректные данные')
 
 
 if __name__ == '__main__':
