@@ -14,15 +14,15 @@ CUR_KOT = {'USD': 'ЗОЛОТО' 'СЕРЕБРО' 'МЕДЬ' 'НЕФТЬ' 'BTC' 
            'Index': 'Индекс ММВБ' 'Индекс PTC' 'DOW.J' 'NAS100' 'S&P 500' 'NIKKEI' 'DAX' 'ESTX50'}
 
 
-def scrap_the_data():
+def scrap_the_data():  # Функция для парсинга таблицы с сайта биржи
     try:
         data = pd.read_html("https://www.finanz.ru/indeksi/diagramma-realnogo-vremeni/micex", header=0,
                             encoding='utf-8')
         string = str(data[3]).strip()
         string = 'Наименование Курс Изменение Время' + '\n' + string
-        string = string.split('\n')
+        string = string.split('\n')  # Получаем сырой материал
 
-        for i in range(len(string)):
+        for i in range(len(string)):  # избавляемся от лишних символов
             if i == 0:
                 pass
             elif i == 1:
@@ -32,7 +32,7 @@ def scrap_the_data():
         data = []
         for i in range(len(string)):
             data.append(string[i].split())
-        for i in data:
+        for i in data:  # обработка значений и возвращение потерянных запятых
             if data.index(i) != 0:
                 if i[1] != '500' and i[1].isdigit():
                     pass
@@ -52,12 +52,12 @@ def scrap_the_data():
         data_in = data[1:8]
         data_met = data[16:]
         title = data[0]
-        return data_cur, data_in, data_met, title
-    except error.URLError:
+        return data_cur, data_in, data_met, title  # возвращаем данные, поделенные на фильтры и заголовки столбцов
+    except error.URLError:  # если нет подключения возвращаем сигнал о том, что нужно вывести ошибку
         return 1
 
 
-def scrap_cb_data():
+def scrap_cb_data():  # Функция для парсинга таблицы с сайта центрального банка
     try:
         data1 = pd.read_html("https://www.cbr.ru/currency_base/daily/", header=0, encoding='utf-8')
         string = str(data1[0]).strip()
@@ -96,9 +96,7 @@ def scrap_cb_data():
             if i != 0:
                 del string[i][0]
         return string
-    except error.URLError:
-        e = QErrorMessage()
-        e.showMessage('Не удалось подключиться к ресурсам. Проверьте подключение к интернету.')
+    except error.URLError:  # если нет подключения возвращаем сигнал о том, что нужно вывести ошибку
         return 1
 
 
@@ -106,20 +104,20 @@ class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
         self.timer = QTimer(self)
-        uic.loadUi('ExchangeRate.ui', self)
-        self.pixmap = QPixmap('calculate.png')
+        uic.loadUi('ExchangeRate.ui', self)  # Подргружаем дизайн
+        self.pixmap = QPixmap('calculate.png')  # Загружаем картинку
         self.pixmap.scaled(235, 100, Qt.KeepAspectRatio)
         self.image = QLabel(self)
         self.image.move(690, 75)
         self.image.resize(235, 100)
         self.image.setPixmap(self.pixmap)
-        self.loadTable()
-        self.loadTable2()
+        self.loadTable()  # Подгружаем таблицу с биржевыми котировками
+        self.loadTable2()  # Подгружаем таблицу с курсами ЦБ
         self.timer.setInterval(10000)
         self.timer.timeout.connect(self.loadTable)
         self.saveCB.clicked.connect(self.get_csv_cb)
         self.saveRT.clicked.connect(self.get_csv)
-        self.checkBox.stateChanged.connect(self.clickBox1)
+        self.checkBox.stateChanged.connect(self.refresh_table)
         self.checkBox_2.stateChanged.connect(self.clickBox1)
         self.checkBox_3.stateChanged.connect(self.clickBox1)
         self.result1.clicked.connect(self.calc_clicked)
@@ -128,10 +126,10 @@ class MyWidget(QMainWindow):
         self.bd_add_2.clicked.connect(self.save_bd_2)
 
     def loadTable(self):
-        self.timer.start()
+        self.timer.start()  # запускаем таймер
         data = []
-        unready_data = scrap_the_data()
-        if unready_data != 1:
+        unready_data = scrap_the_data()  # получаем данные
+        if unready_data != 1:  # с помощью проверок фильтруем информацию
             if self.checkBox.isChecked():
                 for i in unready_data[0]:
                     data.append(i)
@@ -145,24 +143,24 @@ class MyWidget(QMainWindow):
             self.table1.setColumnCount(len(title))
             self.table1.setHorizontalHeaderLabels(title)
             self.table1.setRowCount(0)
-            for i, row in enumerate(data):
+            for i, row in enumerate(data):  # загружаем готовую информацию в таблицу
                 self.table1.setRowCount(
                     self.table1.rowCount() + 1)
                 for j, elem in enumerate(row):
                     item1 = QTableWidgetItem(elem)
-                    if '-' in elem and '%' in elem:
+                    if '-' in elem and '%' in elem:  # выделяем изменения цветом
                         item1.setForeground(QBrush(QColor(255, 0, 0)))
                     elif '%' in elem:
                         item1.setForeground(QBrush(QColor(23, 200, 69)))
                     self.table1.setItem(
                         i, j, item1)
 
-    def loadTable2(self):
-        data1 = scrap_cb_data()
+    def loadTable_cb(self):
+        data1 = scrap_cb_data()  # получаем данные
         if data1 != 1:
             title1 = data1[0]
             del data1[0]
-            self.table2.setColumnCount(len(title1))
+            self.table2.setColumnCount(len(title1))  # сбор таблицы
             self.table2.setHorizontalHeaderLabels(title1)
             self.table2.setRowCount(0)
             for i, row in enumerate(data1):
@@ -173,13 +171,13 @@ class MyWidget(QMainWindow):
                         i, j, QTableWidgetItem(elem))
             self.table2.resizeColumnsToContents()
 
-    def get_csv(self):
-        with open(f'Exchange rate {datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}.csv',
+    def get_csv(self):  # функция для сохранения таблицы с котировками в .csv файл
+        with open(f'Exchange rate {datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}.csv',  # добавляем время
                   'w', newline='', encoding='Windows-1251') as csvfile:
             writer = csv.writer(
                 csvfile, delimiter=';', quotechar='"',
                 quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(
+            writer.writerow(  # Пишем данные в файл
                 [self.table1.horizontalHeaderItem(i).text()
                  for i in range(self.table1.columnCount())])
             for i in range(self.table1.rowCount()):
@@ -190,7 +188,7 @@ class MyWidget(QMainWindow):
                         row.append(item.text())
                 writer.writerow(row)
 
-    def get_csv_cb(self):
+    def get_csv_cb(self):  # функция для сохранения таблицы с курсом ЦБ в .csv файл
         with open(f'CB Exchange Rate {datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}.csv',
                   'w', newline='', encoding='Windows-1251') as csvfile:
             writer = csv.writer(
@@ -207,14 +205,14 @@ class MyWidget(QMainWindow):
                         row.append(item.text())
                 writer.writerow(row)
 
-    def clickBox1(self, state):
+    def refresh_table(self, state):  # Функция, которая обновляет данные при выборе фильтра
         self.loadTable()
 
-    def calc_clicked(self):
+    def calc_clicked(self):  # Функция для рассчетов связанных с котировками
         try:
             budget = self.lineEdit.text()
             currency = self.lineEdit_2.text()
-            if currency in CUR_KOT.get('Index') and currency != '':
+            if currency in CUR_KOT.get('Index') and currency != '':  # Если пользователь ввел индекс выдаем ошибку
                 raise TypeError
             info_cur = scrap_the_data()[0]
             info_met = scrap_the_data()[2]
@@ -224,17 +222,17 @@ class MyWidget(QMainWindow):
             for i in info_met:
                 if currency.upper() in i[0].upper():
                     multiplier = i[1].replace(',', '.').replace(' ', '')
-            if currency.upper() in CUR_KOT.get('USD'):
+            if currency.upper() in CUR_KOT.get('USD'):  # Если курс в долларах, переводим все в рубли
                 USD = info_cur[0][1].replace(',', '.')
                 multiplier = eval(f'{multiplier} * {USD}')
             result = float(budget) // float(multiplier)
             self.lineEdit_3.setText(f'{str(result)}')
         except TypeError:
             self.lineEdit_3.setText('Вы ввели биржевой индекс.')
-        except Exception:
+        except Exception:  # Если пользователь вводит неподходящие данные выдаем ошибку
             self.lineEdit_3.setText('Некорректный формат данных')
 
-    def calc_clicked_cb(self):
+    def calc_clicked_cb(self):  # Функция для рассчетов связанных с курсами ЦБ
         try:
             amount = self.lineEdit_5.text()
             currency = self.lineEdit_6.text()
@@ -243,23 +241,23 @@ class MyWidget(QMainWindow):
                 if currency.upper() in i[1].upper() or currency.upper() in i[2].upper():
                     multiplier = i[3].replace(',', '.').replace(' ', '')
             self.lineEdit_4.setText(f'{eval(f"{amount} * {multiplier}")}')
-        except Exception:
+        except Exception:  # Если пользователь вводит неподходящие данные выдаем ошибку
             self.lineEdit_4.setText('Некорректный формат данных')
 
-    def save_bd(self):
+    def save_bd(self):  # Функция для записи котировок в базу данных
         try:
             csv_row = self.bd.text()
             if int(csv_row) > self.table1.rowCount():
                 raise ValueError
             else:
-                for i in range(self.table1.rowCount()):
+                for i in range(self.table1.rowCount()):  # ищем нужную запись в таблице
                     if i == int(csv_row) - 1:
                         row = []
                         for j in range(self.table1.columnCount()):
                             item = self.table1.item(i, j)
                             if item is not None:
                                 row.append(item.text())
-                con = sqlite3.connect('exchange_rate.sqlite')
+                con = sqlite3.connect('exchange_rate.sqlite')  # подключаемся к БД
                 cur = con.cursor()
                 result = cur.execute(f'''
                   INSERT INTO realtime_kot(currency, rate, change_time)
@@ -267,23 +265,23 @@ class MyWidget(QMainWindow):
                     '{row[1]}', '{row[3]}') ''').fetchall()
                 con.commit()
                 con.close()
-        except ValueError:
+        except ValueError:  # Если пользователь вводит неподходящие данные выдаем ошибку
             self.bd.setText('Некорректные данные')
 
-    def save_bd_2(self):
+    def save_bd_cb(self):  # Функция для записи курсов ЦБ в базу данных
         try:
             csv_row_cb = self.bd_2.text()
             if int(csv_row_cb) > self.table2.rowCount():
                 raise ValueError
             else:
-                for i in range(self.table2.rowCount()):
+                for i in range(self.table2.rowCount()):  # ищем нужную запись в таблице
                     if i == int(csv_row_cb) - 1:
                         row = []
                         for j in range(self.table2.columnCount()):
                             item = self.table2.item(i, j)
                             if item is not None:
                                 row.append(item.text())
-            con = sqlite3.connect('exchange_rate.sqlite')
+            con = sqlite3.connect('exchange_rate.sqlite')  # подключаемся к БД
             cur = con.cursor()
             result = cur.execute(f'''
               INSERT INTO cb_rates(currency, rate, change_time)
@@ -291,14 +289,14 @@ class MyWidget(QMainWindow):
                 '{row[3]}', '{datetime.datetime.now().strftime("%d-%m-%Y %H-%M-%S")}') ''').fetchall()
             con.commit()
             con.close()
-        except ValueError:
+        except ValueError:  # Если пользователь вводит неподходящие данные выдаем ошибку
             self.bd_2.setText('Некорректные данные')
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyWidget()
-    if scrap_the_data() == 1:
+    if scrap_the_data() == 1:  # если все таки подключиться не удалось, показываем ошибку вместо окна
         e = QErrorMessage()
         e.setWindowTitle('Network Error')
         e.showMessage('Не удалось подключиться к ресурсам. Проверьте подключение к интернету.')
