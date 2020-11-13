@@ -112,18 +112,18 @@ class MyWidget(QMainWindow):
         self.image.resize(235, 100)
         self.image.setPixmap(self.pixmap)
         self.loadTable()  # Подгружаем таблицу с биржевыми котировками
-        self.loadTable2()  # Подгружаем таблицу с курсами ЦБ
+        self.loadTable_cb()  # Подгружаем таблицу с курсами ЦБ
         self.timer.setInterval(10000)
         self.timer.timeout.connect(self.loadTable)
         self.saveCB.clicked.connect(self.get_csv_cb)
         self.saveRT.clicked.connect(self.get_csv)
         self.checkBox.stateChanged.connect(self.refresh_table)
-        self.checkBox_2.stateChanged.connect(self.clickBox1)
-        self.checkBox_3.stateChanged.connect(self.clickBox1)
+        self.checkBox_2.stateChanged.connect(self.refresh_table)
+        self.checkBox_3.stateChanged.connect(self.refresh_table)
         self.result1.clicked.connect(self.calc_clicked)
         self.result1_2.clicked.connect(self.calc_clicked_cb)
         self.bd_add.clicked.connect(self.save_bd)
-        self.bd_add_2.clicked.connect(self.save_bd_2)
+        self.bd_add_2.clicked.connect(self.save_bd_cb)
 
     def loadTable(self):
         self.timer.start()  # запускаем таймер
